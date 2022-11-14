@@ -23,6 +23,8 @@ jobs:
       # Checkout repository code
       - name: checkout-code
         uses: actions/checkout@v2
+      - name: "Ensure binary version has been bumped"
+        run: ./check_version.sh
       # Rust Cache
       - name: rust-cache
         uses: actions/cache@v2
@@ -42,8 +44,6 @@ jobs:
         run: |
           rustup target add x86_64-unknown-linux-musl
           cargo build --target x86_64-unknown-linux-musl --release --all
-      - name: "Ensure binary version has been bumped"
-        run: ./check_version.sh
       # Create Release and Upload artifacts
       - name: Release
         uses: softprops/action-gh-release@v1

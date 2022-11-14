@@ -2,13 +2,11 @@
 
 set -e
 
-# To prevent releasing a binary whose version is not updated, we compare the output of the
-# --version flag to the release tag, trimming the leading characters ('v' from the tag,
-# and 'steward ' from the cargo output)
-
-BINARY_VERSION_STRING = $(cargo run --bin steward -- --version)
-BINARY_VERSION = ${BINARY_VERSION_STRING: 8}
-RELEASE_VERSION = ${GITHUB_REF_NAME: 1}
+BINARY_VERSION_STRING = $(cat steward/Cargo.toml | grep "^version.*" | head -1)
+# above output is 'version = "x.x.x"' so we trim the leading and trailing characters
+BINARY_VERSION = echo ${BINARY_VERSION_STRING:11:-1}
+# trim the leading 'v' from the tag
+RELEASE_VERSION = echo ${GITHUB_REF_NAME: 1}
 
 echo "Release version: $RELEASE_VERSION"
 echo "Binary version: $BINARY_VERSION"
